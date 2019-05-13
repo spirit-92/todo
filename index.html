@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+
+<style>
+
+    .grid {
+        width: 800px;
+        margin: 0 auto;
+    }
+
+    .section {
+        display: flex;
+        text-align: center;
+    }
+
+    .section-half {
+        width: 50%;
+    }
+    #form{
+        text-align: center;
+        padding: 50px 0;
+    }
+    #submit{
+        cursor: pointer;
+    }
+    ul{
+        list-style: none;
+    }
+    ul>li>input{
+        margin-left: 10px;
+    }
+
+</style>
+
+<div class="grid">
+    <form id="form" action="#">
+        <input title="text" id="input-text" type="text">
+        <input id="submit" type="submit" value="Add">
+    </form>
+    <div class="section">
+        <div class="section-half">
+            <h2>TODO</h2>
+            <ul id="ul_todo">
+            </ul>
+        </div>
+        <div class="section-half">
+            <h2>Completed</h2>
+            <ul id="ul_completed">
+            </ul>
+        </div>
+    </div>
+</div>
+<script>
+let input = document.querySelector('#input-text'),
+    submit = document.querySelector('#form'),
+    ul_todo = document.querySelector('#ul_todo'),
+    ul_completed = document.querySelector('#ul_completed');
+
+
+class ControllerTodo{
+    constructor(input){
+        this.input = input;
+        this.delete = null
+    }
+    createLi() {
+        this.li = document.createElement('li');
+        this.checkbox = document.createElement('input');
+        this.checkbox.setAttribute('type','checkbox');
+        this.li.innerText = this.input;
+        this.li.appendChild(this.checkbox);
+        return this.li
+    }
+
+    completed(){
+        if (this.checked) {
+            this.li = document.createElement('li');
+            this.delete = document.createElement('button');
+            this.edit = document.createElement('button');
+            this.liP = document.createElement('p');
+            this.delete.innerText = 'Delete';
+            this.edit.innerText = 'Edit';
+            this.liP.innerText = this.closest('li').innerText;
+            this.li.appendChild(this.delete);
+            this.li.appendChild(this.edit);
+            this.li.appendChild(this.liP);
+            ul_completed.appendChild(this.li);
+            this.closest('li').remove();
+                //удаляем при нажатии на Delete
+            this.delete.addEventListener('click',function (e) {
+                this.closest('li').remove();
+            });
+            //редактируем р при нажатии на Edit
+            this.edit.addEventListener('click',function (e) {
+                this.disabled = true;
+                this.saveInput = document.createElement('button');
+                this.inputEdit = document.createElement('input');
+                this.wrapper = document.createElement('div');
+                this.saveInput.innerText = 'Save';
+                this.inputEdit.value = this.closest('li').innerText;
+                let li =  this.closest('li').innerText;
+                let count = this.inputEdit.value.indexOf('Delete');
+                this.inputEdit.value = this.inputEdit.value.split('').splice(0,count);
+                this.wrapper.appendChild(this.inputEdit);
+                this.wrapper.appendChild(this.saveInput);
+                this.closest('li').appendChild(this.wrapper);
+                this.saveInput.addEventListener('click',function (e) {
+                    this.closest('li').children[2].innerText = this.previousSibling.value;
+                    this.closest('li').children[1].disabled = false;
+                    this.parentElement.remove();
+                })
+            })
+        }
+    }
+}
+
+submit.addEventListener('submit' ,function (e) {
+    e.preventDefault();
+    //Создаем обьект с методоами
+    const controllerTodo = new ControllerTodo(input.value);
+    //Создаем li и checkbox
+    let li = controllerTodo.createLi();
+    //Добовляем li на страницу
+    ul_todo.appendChild(li);
+    //берем все сheckbox
+    let checkbox = document.querySelectorAll('#ul_todo>li>input');
+    //закидываем в функцию для обрабортки наши чекбоксы
+    checkbox.forEach(check =>{
+         check.addEventListener("click", controllerTodo.completed, false);
+    });
+});
+
+</script>
+
+</body>
+</html>

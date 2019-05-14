@@ -92,6 +92,7 @@ class ControllerTodo{
             this.li.appendChild(this.liP);
             ul_completed.appendChild(this.li);
             this.closest('li').remove();
+
                 //удаляем при нажатии на Delete
             this.delete.addEventListener('click',function (e) {
                 this.closest('li').remove();
@@ -103,10 +104,7 @@ class ControllerTodo{
                 this.inputEdit = document.createElement('input');
                 this.wrapper = document.createElement('div');
                 this.saveInput.innerText = 'Save';
-                this.inputEdit.value = this.closest('li').innerText;
-                let li =  this.closest('li').innerText;
-                let count = this.inputEdit.value.indexOf('Delete');
-                this.inputEdit.value = this.inputEdit.value.split('').splice(0,count);
+                this.inputEdit.value = this.closest('li').children[2].innerText;
                 this.wrapper.appendChild(this.inputEdit);
                 this.wrapper.appendChild(this.saveInput);
                 this.closest('li').appendChild(this.wrapper);
